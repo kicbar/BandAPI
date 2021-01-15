@@ -7,6 +7,7 @@ using BandAPI.Data;
 using BandAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +47,17 @@ namespace BandAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async c =>
+                    {
+                        c.Response.StatusCode = 500;
+                        await c.Response.WriteAsync("Something went wrong, try again letter.");
+                    });
+                });
             }
 
             app.UseRouting();
