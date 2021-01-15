@@ -25,7 +25,30 @@ namespace BandAPI.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
+        [HttpGet]
+        public ActionResult<IEnumerable<AlbumDto>> GetAlbumsForBand(Guid bandId)
+        {
+            if (!_bandAlbumRepository.BandExists(bandId))
+                return NotFound();
 
+            var albums = _bandAlbumRepository.GetAlbums(bandId);
+
+            return Ok(_mapper.Map<IEnumerable<AlbumDto>>(albums));
+        }
+
+        [HttpGet("{albumId}")]
+        public ActionResult<AlbumDto> GetAlbumForBand(Guid bandId, Guid albumId)
+        {
+            if (!_bandAlbumRepository.BandExists(bandId))
+                return NotFound();
+
+            var album = _bandAlbumRepository.GetAlbum(bandId, albumId);
+            
+            if (album == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<AlbumDto>(album));
+        }
 
     }
 }
