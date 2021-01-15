@@ -11,13 +11,13 @@ using AutoMapper;
 namespace BandAPI.Controllers
 {
     [ApiController]
-    [Route("api/bands")]
-    public class BandController : ControllerBase
+    [Route("api/bands/{bandId}/album")]
+    public class AlbumController : ControllerBase
     {
         private readonly IBandAlbumRepository _bandAlbumRepository;
         private readonly IMapper _mapper;
 
-        public BandController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
+        public AlbumController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
         {
             _bandAlbumRepository = bandAlbumRepository ??
                 throw new ArgumentNullException(nameof(bandAlbumRepository));
@@ -25,24 +25,6 @@ namespace BandAPI.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<BandDto>> GetBands()
-        {
-            var bands = _bandAlbumRepository.GetBands();
-
-            return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
-        }
-
-        [HttpGet("{bandId}")]
-        public IActionResult GetBand(Guid bandId)
-        {
-            var band = _bandAlbumRepository.GetBand(bandId);
-
-            if (band == null)
-                return NotFound();
-
-            return Ok(band);
-        }
 
 
     }
