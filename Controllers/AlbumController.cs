@@ -26,6 +26,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         public ActionResult<IEnumerable<AlbumDto>> GetAlbumsForBand(Guid bandId)
         {
             if (!_bandAlbumRepository.BandExists(bandId))
@@ -37,6 +38,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet("{albumId}")]
+        [HttpHead]
         public ActionResult<AlbumDto> GetAlbumForBand(Guid bandId, Guid albumId)
         {
             if (!_bandAlbumRepository.BandExists(bandId))

@@ -26,6 +26,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         public ActionResult<IEnumerable<BandDto>> GetBands()
         {
             var bands = _bandAlbumRepository.GetBands();
@@ -34,6 +35,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet("{bandId}")]
+        [HttpHead]
         public IActionResult GetBand(Guid bandId)
         {
             var band = _bandAlbumRepository.GetBand(bandId);
