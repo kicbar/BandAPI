@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace BandAPI.Controllers
 {
@@ -14,19 +15,22 @@ namespace BandAPI.Controllers
     public class BandController : ControllerBase
     {
         private readonly IBandAlbumRepository _bandAlbumRepository;
+        private readonly IMapper _mapper;
 
-        public BandController(IBandAlbumRepository bandAlbumRepository)
+        public BandController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
         {
             _bandAlbumRepository = bandAlbumRepository ??
                 throw new ArgumentNullException(nameof(bandAlbumRepository));
+            _mapper = mapper ??
+                throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<BandDto>> GetBands()
         {
             var bands = _bandAlbumRepository.GetBands();
-            var bandsDto = new List<BandDto>();
-
+            
+            /*var bandsDto = new List<BandDto>();
             foreach (var band in bands)
             {
                 bandsDto.Add(new BandDto()
@@ -36,9 +40,9 @@ namespace BandAPI.Controllers
                     MainGenre = band.MainGenre,
                     FoundedYearsAgo = $"{band.Founded.ToString("yyyy")} ({band.Founded.GetYearsAgo()} years ago)"
                 });
-            }
+            }*/
 
-            return Ok(bandsDto);
+            return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
         }
 
         [HttpGet("{bandId}")]
