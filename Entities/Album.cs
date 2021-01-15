@@ -9,7 +9,7 @@ namespace BandAPI.Entities
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(20)]
+        [MaxLength(200)]
         public string Title { get; set; }
         [MaxLength(400)]
         public string Description { get; set; }
