@@ -114,14 +114,25 @@ namespace BandAPI.Services
                 .ToList();
         }
 
-        public IEnumerable<Band> GetBands(string mainGenre)
+        public IEnumerable<Band> GetBands(string mainGenre, string searchQuery)
         {
-            if (string.IsNullOrWhiteSpace(mainGenre))
+            if (string.IsNullOrWhiteSpace(mainGenre) && string.IsNullOrWhiteSpace(searchQuery))
                 return GetBands();
 
-            mainGenre = mainGenre.Trim();
+            var collection = _bandAlbumContext.Bands as IQueryable<Band>;
 
-            return _bandAlbumContext.Bands.Where(b => b.MainGenre == mainGenre).ToList();
+            if (!string.IsNullOrWhiteSpace(mainGenre))
+            {
+                mainGenre = mainGenre.Trim();
+                collection = collection.Where(b => b.MainGenre == mainGenre);
+            }
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(b => b.Name.Contains(searchQuery));
+            }
+
+            return collection.ToList();
         }
 
         public bool Save()
