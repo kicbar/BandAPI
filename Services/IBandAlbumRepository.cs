@@ -14,6 +14,7 @@ namespace BandAPI.Services
 
         IEnumerable<Band> GetBands();
         IEnumerable<Band> GetBands(IEnumerable<Guid> bandsIds);
+        IEnumerable<Band> GetBands(string mainGenre);
         Band GetBand(Guid bandId);
         void AddBand(Guid bandId, Band band);
         void UpdateBand(Guid bandId, Band band);

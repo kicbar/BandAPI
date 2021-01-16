@@ -114,6 +114,16 @@ namespace BandAPI.Services
                 .ToList();
         }
 
+        public IEnumerable<Band> GetBands(string mainGenre)
+        {
+            if (string.IsNullOrWhiteSpace(mainGenre))
+                return GetBands();
+
+            mainGenre = mainGenre.Trim();
+
+            return _bandAlbumContext.Bands.Where(b => b.MainGenre == mainGenre).ToList();
+        }
+
         public bool Save()
         {
             return (_bandAlbumContext.SaveChanges() >= 0);

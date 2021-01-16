@@ -27,9 +27,9 @@ namespace BandAPI.Controllers
 
         [HttpGet]
         [HttpHead]
-        public ActionResult<IEnumerable<BandDto>> GetBands()
+        public ActionResult<IEnumerable<BandDto>> GetBands([FromQuery]string mainGenre)
         {
-            var bands = _bandAlbumRepository.GetBands();
+            var bands = _bandAlbumRepository.GetBands(mainGenre);
 
             return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
         }
