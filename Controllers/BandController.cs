@@ -34,8 +34,7 @@ namespace BandAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
         }
 
-        [HttpGet("{bandId}")]
-        [HttpHead]
+        [HttpGet("{bandId}", Name = "GetBand")]
         public IActionResult GetBand(Guid bandId)
         {
             var band = _bandAlbumRepository.GetBand(bandId);
@@ -46,6 +45,17 @@ namespace BandAPI.Controllers
             return Ok(band);
         }
 
+        [HttpPost]
+        public ActionResult<BandDto> CreateBand([FromBody] BandForCreatingDto band)
+        {
+            var bandEntity = _mapper.Map<Entities.Band>(band);
+            _bandAlbumRepository.AddBand(bandEntity);
+            _bandAlbumRepository.Save();
+
+            var bandToReturn = _mapper.Map<BandDto>(bandEntity);
+
+            return CreatedAtRoute("GetBand", new { bandId = bandToReturn.Id}, bandToReturn);
+        }
 
     }
 }

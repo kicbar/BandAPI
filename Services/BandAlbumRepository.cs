@@ -29,7 +29,7 @@ namespace BandAPI.Services
             _bandAlbumContext.Albums.Add(album);
         }
 
-        public void AddBand(Guid bandId, Band band)
+        public void AddBand(Band band)
         {
             if (band == null)
                 throw new ArgumentNullException(nameof(band));
