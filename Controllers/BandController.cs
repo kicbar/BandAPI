@@ -11,7 +11,7 @@ using AutoMapper;
 namespace BandAPI.Controllers
 {
     [ApiController]
-    [Route("api/bands")]
+    [Route("api/band")]
     public class BandController : ControllerBase
     {
         private readonly IBandAlbumRepository _bandAlbumRepository;
