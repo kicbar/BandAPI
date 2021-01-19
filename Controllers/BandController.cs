@@ -46,13 +46,13 @@ namespace BandAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<BandDto> CreateBand([FromBody] BandForCreatingDto band)
+        public ActionResult<BandDto> CreateBand([FromBody] BandForCreatingDto bandDto)
         {
-            var bandEntity = _mapper.Map<Entities.Band>(band);
-            _bandAlbumRepository.AddBand(bandEntity);
+            var band = _mapper.Map<Entities.Band>(bandDto);
+            _bandAlbumRepository.AddBand(band);
             _bandAlbumRepository.Save();
 
-            var bandToReturn = _mapper.Map<BandDto>(bandEntity);
+            var bandToReturn = _mapper.Map<BandDto>(band);
 
             return CreatedAtRoute("GetBand", new { bandId = bandToReturn.Id}, bandToReturn);
         }
