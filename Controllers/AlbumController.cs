@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace BandAPI.Controllers
 {
@@ -65,7 +66,7 @@ namespace BandAPI.Controllers
 
             var albumToReturn = _mapper.Map<AlbumDto>(album);
 
-            return CreatedAtRoute("GetAlbumForBand", new {bandId = bandId, albumId =  albumToReturn.Id}, albumToReturn);
+            return CreatedAtRoute("GetAlbumForBand", new { bandId = bandId, albumId = albumToReturn.Id }, albumToReturn);
         }
 
 
@@ -86,5 +87,30 @@ namespace BandAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch("{albumId}")]
+        public ActionResult PartiallyUpdateAlbumForBand(Guid bandId, Guid albumId, [FromBody] JsonPatchDocument<AlbumForUpdatingDto> patchDocument)
+        {
+            if (!_bandAlbumRepository.BandExists(bandId))
+                return NotFound();
+
+            var album = _bandAlbumRepository.GetAlbum(bandId, albumId);
+
+            if (album == null)
+                return NotFound();
+
+            var albumToPatch = _mapper.Map<AlbumForUpdatingDto>(album);
+            patchDocument.ApplyTo(albumToPatch, ModelState);
+
+            if (!TryValidateModel(albumToPatch))
+                return ValidationProblem(ModelState);
+
+            _mapper.Map(albumToPatch, album);
+            _bandAlbumRepository.UpdateAlbum(album);
+            _bandAlbumRepository.Save();
+
+            return NoContent();
+        }
+
     }
 }
