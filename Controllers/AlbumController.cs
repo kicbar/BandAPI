@@ -112,5 +112,20 @@ namespace BandAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{albumId}")]
+        public ActionResult DeleteAlbumForBand(Guid bandId, Guid albumId)
+        {
+            if (!_bandAlbumRepository.BandExists(bandId))
+                return NotFound();
+
+            var album = _bandAlbumRepository.GetAlbum(bandId, albumId);
+
+            if (album == null)
+                return NotFound();
+
+            _bandAlbumRepository.DeleteAlbum(album);
+
+            return NoContent();
+        }
     }
 }
