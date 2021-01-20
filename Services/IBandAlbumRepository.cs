@@ -10,7 +10,7 @@ namespace BandAPI.Services
         IEnumerable<Album> GetAlbums(Guid bandId);
         Album GetAlbum(Guid bandId, Guid albumId);
         void AddAlbum(Guid bandId, Album album);
-        void UpdateAlbum(Guid bandId, Album album);
+        void UpdateAlbum(Album album);
         void DeleteAlbum(Album album);
 
         IEnumerable<Band> GetBands();
@@ -18,7 +18,7 @@ namespace BandAPI.Services
         IEnumerable<Band> GetBands(BandResourceParameters bandResourceParameters);
         Band GetBand(Guid bandId);
         void AddBand(Band band);
-        void UpdateBand(Guid bandId, Band band);
+        void UpdateBand(Band band);
         void DeleteBand(Band band);
 
         bool BandExists(Guid bandId);

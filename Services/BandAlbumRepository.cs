@@ -143,12 +143,12 @@ namespace BandAPI.Services
             return (_bandAlbumContext.SaveChanges() >= 0);
         }
 
-        public void UpdateAlbum(Guid bandId, Album album)
+        public void UpdateAlbum(Album album)
         {
             //not implemented
         }
 
-        public void UpdateBand(Guid bandId, Band band)
+        public void UpdateBand(Band band)
         {
             //not implemented
         }
