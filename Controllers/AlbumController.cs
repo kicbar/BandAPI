@@ -124,6 +124,7 @@ namespace BandAPI.Controllers
                 return NotFound();
 
             _bandAlbumRepository.DeleteAlbum(album);
+            _bandAlbumRepository.Save();
 
             return NoContent();
         }
