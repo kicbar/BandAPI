@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/band",
+      "launchUrl": "api/bands",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "BandAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/band",
+      "launchUrl": "api/bands",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

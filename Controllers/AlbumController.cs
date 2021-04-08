@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.JsonPatch;
 namespace BandAPI.Controllers
 {
     [ApiController]
-    [Route("api/band/{bandId}/album")]
+    [Route("api/bands/{bandId}/album")]
     public class AlbumController : ControllerBase
     {
         private readonly IBandAlbumRepository _bandAlbumRepository;
