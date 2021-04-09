@@ -106,7 +106,19 @@ namespace BandAPI.Controllers
             var album = _bandAlbumRepository.GetAlbum(bandId, albumId);
 
             if (album == null)
-                return NotFound();
+            {
+                var albumDto = new AlbumForUpdatingDto();
+                patchDocument.ApplyTo(albumDto);
+                var albumToAdd = _mapper.Map<Entities.Album>(albumDto);
+                albumToAdd.Id = albumId;
+                _bandAlbumRepository.AddAlbum(bandId, albumToAdd);
+                _bandAlbumRepository.Save();
+
+                var albumToReturn = _mapper.Map<AlbumDto>(albumToAdd);
+
+                return CreatedAtRoute("GetAlbumForBand", new { bandId = bandId, albumId = albumToReturn.Id }, albumToReturn);
+
+            }
 
             var albumToPatch = _mapper.Map<AlbumForUpdatingDto>(album);
             patchDocument.ApplyTo(albumToPatch, ModelState);
