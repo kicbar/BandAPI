@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using System.Text.Json;
 
 namespace BandAPI.Controllers
 {
@@ -25,11 +26,26 @@ namespace BandAPI.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetBands")]
         [HttpHead]
         public ActionResult<IEnumerable<BandDto>> GetBands([FromQuery] BandResourceParameters bandResourceParameters)
         {
             var bands = _bandAlbumRepository.GetBands(bandResourceParameters);
+
+            var previousPageLink = bands.HasPrevious ? CreateBandsUri(bandResourceParameters, UriType.PreviousPage) : null;
+            var previousNextLink = bands.HasNext ? CreateBandsUri(bandResourceParameters, UriType.NextPage) : null;
+
+            var metaData = new
+            {
+                totalCount = bands.TotalCount,
+                pageSize = bands.PageSize,
+                currentPage = bands.CurrentPage,
+                totalPages = bands.TotalPages,
+                previousPageLink = previousPageLink,
+                previousNextLink = previousNextLink
+            };
+
+            Response.Headers.Add("Pagination", JsonSerializer.Serialize(metaData));
 
             return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
         }
@@ -70,5 +86,37 @@ namespace BandAPI.Controllers
             return NoContent();
         }
 
+        private string CreateBandsUri(BandResourceParameters bandResourceParameters, UriType uriType)
+        {
+
+            switch (uriType)
+            {
+                case UriType.PreviousPage:
+                    return Url.Link("GetBands", new 
+                    {
+                        pageNumber = bandResourceParameters.PageNumber - 1,
+                        pageSize = bandResourceParameters.PageSize,
+                        mainGenre = bandResourceParameters.MainGenre,
+                        searchQuery = bandResourceParameters.SearchQuery
+                    });
+
+                case UriType.NextPage:
+                    return Url.Link("GetBands", new
+                    {
+                        pageNumber = bandResourceParameters.PageNumber + 1,
+                        pageSize = bandResourceParameters.PageSize,
+                        mainGenre = bandResourceParameters.MainGenre,
+                        searchQuery = bandResourceParameters.SearchQuery
+                    });
+                default:
+                    return Url.Link("GetBands", new
+                    {
+                        pageNumber = bandResourceParameters.PageNumber,
+                        pageSize = bandResourceParameters.PageSize,
+                        mainGenre = bandResourceParameters.MainGenre,
+                        searchQuery = bandResourceParameters.SearchQuery
+                    });
+            }
+        }
     }
 }
