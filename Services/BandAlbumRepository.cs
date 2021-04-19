@@ -4,16 +4,19 @@ using BandAPI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BandAPI.Services
 {
     public class BandAlbumRepository : IBandAlbumRepository
     {
         private readonly BandAlbumContext _bandAlbumContext;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public BandAlbumRepository(BandAlbumContext bandAlbumContext)
+        public BandAlbumRepository(BandAlbumContext bandAlbumContext, IPropertyMappingService propertyMappingService)
         {
             _bandAlbumContext = bandAlbumContext ?? throw new ArgumentNullException(nameof(bandAlbumContext));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(bandAlbumContext));
         }
 
         public void AddAlbum(Guid bandId, Album album)
@@ -130,6 +133,14 @@ namespace BandAPI.Services
             {
                 var searchQuery = bandResourceParameters.SearchQuery.Trim();
                 collection = collection.Where(b => b.Name.Contains(searchQuery));
+            }
+
+            if (!string.IsNullOrWhiteSpace(bandResourceParameters.OrderBy))
+            { 
+                var bandPropertyMappingDictionary = _propertyMappingService.GetPropertyMapping<Models.BandDto, Entities.Band>();
+
+                collection = collection.ApplySort(bandResourceParameters.OrderBy,
+                    bandPropertyMappingDictionary);
             }
 
             return PagedList<Band>.Create(collection, bandResourceParameters.PageNumber, bandResourceParameters.PageSize);
