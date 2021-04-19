@@ -14,7 +14,7 @@ namespace BandAPI.Services
                 {"Id", new PropertyMappingValue(new List<string>() {"Id"})},
                 {"Name", new PropertyMappingValue(new List<string>() {"Name"})},
                 {"MainGenre", new PropertyMappingValue(new List<string>() {"MainGenre"})},
-                {"Founded", new PropertyMappingValue(new List<string>() {"FoundedYearsAgo"}, true)}
+                {"FoundedYearsAgo", new PropertyMappingValue(new List<string>() {"Founded"}, true)}
             };
 
         private IList<IPropertyMappingMarker> _propertyMappings = new List<IPropertyMappingMarker>();
