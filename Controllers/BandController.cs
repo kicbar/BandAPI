@@ -32,7 +32,7 @@ namespace BandAPI.Controllers
 
         [HttpGet(Name = "GetBands")]
         [HttpHead]
-        public ActionResult<IEnumerable<BandDto>> GetBands([FromQuery] BandResourceParameters bandResourceParameters)
+        public IActionResult GetBands([FromQuery] BandResourceParameters bandResourceParameters)
         {
             if (!_propertyMappingService.ValidMappingExist<BandDto, Band>(bandResourceParameters.OrderBy))
                 return BadRequest();
@@ -54,7 +54,7 @@ namespace BandAPI.Controllers
 
             Response.Headers.Add("Pagination", JsonSerializer.Serialize(metaData));
 
-            return Ok(_mapper.Map<IEnumerable<BandDto>>(bands));
+            return Ok(_mapper.Map<IEnumerable<BandDto>>(bands).ShapeData(bandResourceParameters.Fields));
         }
 
         [HttpGet("{bandId}", Name = "GetBand")]
@@ -101,6 +101,7 @@ namespace BandAPI.Controllers
                 case UriType.PreviousPage:
                     return Url.Link("GetBands", new 
                     {
+                        fields = bandResourceParameters.Fields,
                         orderBy = bandResourceParameters.OrderBy,
                         pageNumber = bandResourceParameters.PageNumber - 1,
                         pageSize = bandResourceParameters.PageSize,
@@ -111,6 +112,7 @@ namespace BandAPI.Controllers
                 case UriType.NextPage:
                     return Url.Link("GetBands", new
                     {
+                        fields = bandResourceParameters.Fields,
                         orderBy = bandResourceParameters.OrderBy,
                         pageNumber = bandResourceParameters.PageNumber + 1,
                         pageSize = bandResourceParameters.PageSize,
@@ -120,6 +122,7 @@ namespace BandAPI.Controllers
                 default:
                     return Url.Link("GetBands", new
                     {
+                        fields = bandResourceParameters.Fields,
                         orderBy = bandResourceParameters.OrderBy,
                         pageNumber = bandResourceParameters.PageNumber,
                         pageSize = bandResourceParameters.PageSize,

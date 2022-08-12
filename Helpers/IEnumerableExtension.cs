@@ -17,7 +17,7 @@ namespace BandAPI.Helpers
 
             if (string.IsNullOrWhiteSpace(fields))
             {
-                var propertyInfos = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var propertyInfos = typeof(TSource).GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                 propertyInfoList.AddRange(propertyInfos);
             }
             else
@@ -26,7 +26,7 @@ namespace BandAPI.Helpers
                 foreach (var field in fieldAfterSplit)
                 {
                     var propertyName = field.Trim();
-                    var propertyInfo = typeof(TSource).GetProperty(propertyName);
+                    var propertyInfo = typeof(TSource).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
                     if (propertyInfo == null)
                         throw new Exception(propertyName.ToString() + " was not found.");
