@@ -58,14 +58,14 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet("{bandId}", Name = "GetBand")]
-        public IActionResult GetBand(Guid bandId)
+        public IActionResult GetBand(Guid bandId, string fields)
         {
             var band = _bandAlbumRepository.GetBand(bandId);
 
             if (band == null)
                 return NotFound();
 
-            return Ok(band);
+            return Ok(_mapper.Map<BandDto>(band).ShapeDate(fields));
         }
 
         [HttpPost]
