@@ -16,11 +16,12 @@ namespace BandAPI.Controllers
     [Route("api/bands")]
     public class BandController : ControllerBase
     {
-        private readonly IBandAlbumRepository _bandAlbumRepository;
         private readonly IMapper _mapper;
+        private readonly IBandAlbumRepository _bandAlbumRepository;
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IPropertyValidationService _propertyValidationService;
 
-        public BandController(IBandAlbumRepository bandAlbumRepository, IMapper mapper, IPropertyMappingService propertyMappingService)
+        public BandController(IBandAlbumRepository bandAlbumRepository, IMapper mapper, IPropertyMappingService propertyMappingService, IPropertyValidationService propertyValidationService)
         {
             _bandAlbumRepository = bandAlbumRepository ??
                 throw new ArgumentNullException(nameof(bandAlbumRepository));
@@ -28,6 +29,8 @@ namespace BandAPI.Controllers
                 throw new ArgumentNullException(nameof(mapper));
             _propertyMappingService = propertyMappingService ??
                 throw new ArgumentNullException(nameof(propertyMappingService));
+            _propertyValidationService = propertyValidationService ??
+                throw new ArgumentNullException(nameof(propertyValidationService));
         }
 
         [HttpGet(Name = "GetBands")]
@@ -35,6 +38,9 @@ namespace BandAPI.Controllers
         public IActionResult GetBands([FromQuery] BandResourceParameters bandResourceParameters)
         {
             if (!_propertyMappingService.ValidMappingExist<BandDto, Band>(bandResourceParameters.OrderBy))
+                return BadRequest();
+
+            if (!_propertyValidationService.HasValidProperty<BandDto>(bandResourceParameters.Fields))
                 return BadRequest();
 
             var bands = _bandAlbumRepository.GetBands(bandResourceParameters);
@@ -60,6 +66,9 @@ namespace BandAPI.Controllers
         [HttpGet("{bandId}", Name = "GetBand")]
         public IActionResult GetBand(Guid bandId, string fields)
         {
+            if (!_propertyValidationService.HasValidProperty<BandDto>(fields))
+                return BadRequest();
+
             var band = _bandAlbumRepository.GetBand(bandId);
 
             if (band == null)
