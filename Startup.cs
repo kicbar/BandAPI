@@ -24,6 +24,7 @@ namespace BandAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCaching();
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
@@ -41,7 +42,7 @@ namespace BandAPI
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
         }
-
+ 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -59,6 +60,8 @@ namespace BandAPI
                     });
                 });
             }
+
+            app.UseResponseCaching();
 
             app.UseRouting();
 

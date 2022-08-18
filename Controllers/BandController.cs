@@ -34,7 +34,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet(Name = "GetBands")]
-        [HttpHead]
+        [ResponseCache(Duration = 120)]
         public IActionResult GetBands([FromQuery] BandResourceParameters bandResourceParameters)
         {
             if (!_propertyMappingService.ValidMappingExist<BandDto, Band>(bandResourceParameters.OrderBy))

@@ -39,7 +39,7 @@ namespace BandAPI.Controllers
         }
 
         [HttpGet("{albumId}", Name = "GetAlbumForBand")]
-        [HttpHead]
+        [ResponseCache(Duration =120)]
         public ActionResult<AlbumDto> GetAlbumForBand(Guid bandId, Guid albumId)
         {
             if (!_bandAlbumRepository.BandExists(bandId))
