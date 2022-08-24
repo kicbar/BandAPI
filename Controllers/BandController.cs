@@ -1,14 +1,12 @@
-﻿using BandAPI.Models;
-using BandAPI.Services;
+﻿using AutoMapper;
+using BandAPI.Entities;
 using BandAPI.Helpers;
+using BandAPI.Models;
+using BandAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using System.Text.Json;
-using BandAPI.Entities;
 
 namespace BandAPI.Controllers
 {
@@ -74,7 +72,11 @@ namespace BandAPI.Controllers
             if (band == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<BandDto>(band).ShapeDate(fields));
+            var links = CreateLinksForBank(bandId, fields);
+            var linkedResourceToReturn = _mapper.Map<BandDto>(band).ShapeDate(fields) as IDictionary<string, object>;
+            linkedResourceToReturn.Add("links", links);
+
+            return Ok(linkedResourceToReturn);
         }
 
         [HttpPost]
@@ -89,7 +91,7 @@ namespace BandAPI.Controllers
             return CreatedAtRoute("GetBand", new { bandId = bandToReturn.Id}, bandToReturn);
         }
 
-        [HttpDelete("{bandId}")]
+        [HttpDelete("{bandId}", Name = "DeleteBand")]
         public ActionResult DeleteBand(Guid bandId)
         {
             var band = _bandAlbumRepository.GetBand(bandId);
@@ -139,6 +141,48 @@ namespace BandAPI.Controllers
                         searchQuery = bandResourceParameters.SearchQuery
                     });
             }
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForBank(Guid bandId, string fields)
+        { 
+            var links = new List<LinkDto>();
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                links.Add(
+                    new LinkDto(
+                        Url.Link("GetBand", new { bandId }),
+                        "self",
+                        "GET"));
+            }
+            else
+            {
+                links.Add(
+                    new LinkDto(
+                        Url.Link("GetBand", new { bandId, fields }),
+                        "self",
+                        "GET"));
+            }
+
+            links.Add(
+                new LinkDto(
+                    Url.Link("DeleteBand", new { bandId }),
+                    "delete_band",
+                    "DELETE"));
+            
+            links.Add(
+                new LinkDto(
+                    Url.Link("CreateAlbumForBand", new { bandId }),
+                    "create_album_for_band",
+                    "POST"));
+
+            links.Add(
+                new LinkDto(
+                    Url.Link("GetAlbumsForBand", new { bandId }),
+                    "albums",
+                    "GET"));
+
+            return links;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace BandAPI.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetAlbumsForBand")]
         [HttpHead]
         public ActionResult<IEnumerable<AlbumDto>> GetAlbumsForBand(Guid bandId)
         {
@@ -54,7 +54,7 @@ namespace BandAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost(Name = "CreateAlbumForBand")]
         public ActionResult<AlbumDto> CreateAlbumForBand(Guid bandId, [FromBody] AlbumForCreatingDto albumDto)
         {
             if (!_bandAlbumRepository.BandExists(bandId))
